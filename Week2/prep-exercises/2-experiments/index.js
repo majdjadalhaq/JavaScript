@@ -12,6 +12,10 @@ function runExperiment(sampleSize) {
   //    value from the previous step. Use the first element of `valueCounts`
   //    for keeping a count how many times the value 1 is thrown, the second
   //    element for value 2, etc.
+  for (let i = 0; i < sampleSize; i++) {
+    const dieRoll = Math.floor(Math.random() * 6) + 1; // 1-6
+    valueCounts[dieRoll - 1] += 1;
+  }
 
   const results = [];
 
@@ -24,6 +28,10 @@ function runExperiment(sampleSize) {
   // 2. Convert the computed percentage to a number string with a precision of
   //    two decimals, e.g. '14.60'.
   // 3. Then push that string onto the `results` array.
+  for (const count of valueCounts) {
+    const percentage = (count / sampleSize) * 100;
+    results.push(percentage.toFixed(2));
+  }
 
   return results;
 }
@@ -41,6 +49,10 @@ function main() {
   // [ '26.00', '17.00', '10.00', '19.00', '16.00', '12.00' ] 100
   // [ '14.60', '17.10', '19.30', '15.50', '16.70', '16.80' ] 1000
   // [ '16.71', '16.68', '16.69', '16.66', '16.67', '16.59' ] 1000000
+  for (const size of sampleSizes) {
+    const experimentResult = runExperiment(size);
+    console.log(experimentResult, size);
+  }
 }
 
 main();
