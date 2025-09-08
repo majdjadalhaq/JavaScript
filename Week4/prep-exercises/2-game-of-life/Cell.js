@@ -14,6 +14,7 @@ export default class Cell {
     this.y = y;
     this.alive = Math.random() > 0.5;
     this.nextAlive = false;
+    this.lifeTime = this.alive ? 1 : 0;
   }
 
   draw(context) {
@@ -27,8 +28,20 @@ export default class Cell {
     );
 
     if (this.alive) {
+      // Calculate opacity based on lifeTime
+      let opacity;
+      if (this.lifeTime === 1) {
+        opacity = 0.25;
+      } else if (this.lifeTime === 2) {
+        opacity = 0.5;
+      } else if (this.lifeTime === 3) {
+        opacity = 0.75;
+      } else {
+        opacity = 1; // lifeTime >= 4
+      }
+
       // Draw living this inside background
-      context.fillStyle = `rgb(24, 215, 236)`;
+      context.fillStyle = `rgba(24, 215, 236, ${opacity})`;
       context.fillRect(
         this.x * Cell.size + 1,
         this.y * Cell.size + 1,
@@ -52,6 +65,20 @@ export default class Cell {
   }
 
   update() {
+    const wasAlive = this.alive;
     this.alive = this.nextAlive;
+
+    // Update lifeTime based on the rules
+    if (this.alive && wasAlive) {
+      // Living cell that remains living - increment lifeTime
+      this.lifeTime++;
+    } else if (!this.alive && wasAlive) {
+      // Living cell that dies - reset lifeTime to zero
+      this.lifeTime = 0;
+    } else if (this.alive && !wasAlive) {
+      // Dead cell that is brought to life - reset lifeTime to one
+      this.lifeTime = 1;
+    }
+    // Dead cell that remains dead - lifeTime stays 0 (no change needed)
   }
 }
